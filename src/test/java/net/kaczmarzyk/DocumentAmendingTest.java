@@ -18,13 +18,11 @@ public class DocumentAmendingTest {
     public ExpectedException exception = ExpectedException.none();
 
     Person author = new Person("Homer Simpson");
-    Person editor = new Person("Bart Simpson");
     Person sbElse = new Person("Peter Griffin");
 
     Document submitedDocument = document()
             .withStatus(SUBMITED)
             .authoredBy(author)
-            .withEditor(editor)
             .build();
     
     Document rejectedDocument = document()
@@ -34,7 +32,6 @@ public class DocumentAmendingTest {
 
     Document draftDocument = document()
             .authoredBy(author)
-            .withEditor(editor)
             .build();
     
     @Test
@@ -55,7 +52,7 @@ public class DocumentAmendingTest {
     public void documentCanBeAmendedOnlyByAuthor() {
         exception.expect(IllegalArgumentException.class);
 
-        submitedDocument.amend("new content", editor);
+        submitedDocument.amend("new content", sbElse);
     }
 
     @Test

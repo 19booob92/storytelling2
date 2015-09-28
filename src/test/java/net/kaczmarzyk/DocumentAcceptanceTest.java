@@ -17,19 +17,16 @@ public class DocumentAcceptanceTest {
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
-    Person author = new Person("Homer Simpson");
     Person editor = new Person("Bart Simpson");
     Person editor2 = new Person("Marge Simpson");
     Person sbElse = new Person("Peter Griffin");
     
     Document submitedDocument = document()
             .withStatus(SUBMITED)
-            .authoredBy(author)
             .withEditors(editor, editor2)
             .build();
     
     Document draftDocument = document()
-            .authoredBy(author)
             .withEditor(editor)
             .build();
     
