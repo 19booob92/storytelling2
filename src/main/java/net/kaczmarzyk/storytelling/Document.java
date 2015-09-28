@@ -1,6 +1,7 @@
 package net.kaczmarzyk.storytelling;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -11,13 +12,13 @@ public class Document {
     private List<Revision> revisions = new ArrayList<>();
     
     private Person author;
-    private Person editor;
+    private Collection<Person> editors;
     private Person reviewer;
     
     
-    public Document(String content, Person author, Person editor, Person reviewer) {
+    public Document(String content, Person author, Collection<Person> editors, Person reviewer) {
         this.author = author;
-        this.editor = editor;
+        this.editors = new ArrayList<Person>(editors);
         this.reviewer = reviewer;
         this.revisions.add(new Revision(content));
     }
@@ -41,17 +42,19 @@ public class Document {
     }
     
     public void reject(Person rejectingEditor) {
-        if (!Objects.equals(editor, rejectingEditor)) {
+        if (!editors.contains(rejectingEditor)) {
             throw new IllegalArgumentException("only editor may reject document");
         }
         getLastRevision().reject();
     }
     
     public void accept(Person acceptingEditor) {
-        if (!Objects.equals(editor, acceptingEditor)) {
+        if (!editors.contains(acceptingEditor)) {
             throw new IllegalArgumentException("only editor may reject document");
         }
-        getLastRevision().accept();
+        Revision lastRevision = getLastRevision();
+        lastRevision.accept(acceptingEditor);
+        lastRevision.markAcceptedIfReady(editors);
     }
 
     public List<Revision> getRevisions() {

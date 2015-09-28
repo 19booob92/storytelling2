@@ -1,6 +1,7 @@
 package net.kaczmarzyk;
 
 import java.util.Arrays;
+import java.util.List;
 
 import net.kaczmarzyk.storytelling.Document;
 import net.kaczmarzyk.storytelling.RevisionStatus;
@@ -11,7 +12,7 @@ public class DocumentBuilder {
 
     private String content = "dummy content";
     private Person author = new Person("Author");
-    private Person editor = new Person("Editor");
+    private List<Person> editors = Arrays.asList(new Person("Editor"));
     private Person reviewer = new Person("Reviewer");
     private RevisionStatus status;
     
@@ -29,12 +30,16 @@ public class DocumentBuilder {
     }
     
     public DocumentBuilder withEditor(Person editor) {
-        this.editor = editor;
+        return withEditors(editor);
+    }
+    
+    public DocumentBuilder withEditors(Person... editors) {
+        this.editors = Arrays.asList(editors);
         return this;
     }
     
     public Document build() {
-        Document doc = new Document(content, author, editor, reviewer);
+        Document doc = new Document(content, author, editors, reviewer);
         if (Arrays.asList(RevisionStatus.SUBMITED,
                 RevisionStatus.REJECTED,
                 RevisionStatus.ACCEPTED).contains(status)) {
@@ -42,7 +47,7 @@ public class DocumentBuilder {
             doc.submit(author);
         }
         if (status == RevisionStatus.REJECTED) {
-            doc.reject(editor);
+            doc.reject(editors.get(0));
         }
         return doc;
     }

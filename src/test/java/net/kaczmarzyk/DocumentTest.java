@@ -2,7 +2,9 @@ package net.kaczmarzyk;
 
 import static net.kaczmarzyk.DocumentAssert.assertThat;
 import static net.kaczmarzyk.DocumentBuilder.document;
-import static net.kaczmarzyk.storytelling.RevisionStatus.*;
+import static net.kaczmarzyk.storytelling.RevisionStatus.ACCEPTED;
+import static net.kaczmarzyk.storytelling.RevisionStatus.REJECTED;
+import static net.kaczmarzyk.storytelling.RevisionStatus.SUBMITED;
 import static org.junit.Assert.assertTrue;
 import net.kaczmarzyk.storytelling.Document;
 import net.kaczmarzyk.storytelling.Person;
@@ -19,12 +21,13 @@ public class DocumentTest {
 
     Person author = new Person("Homer Simpson");
     Person editor = new Person("Bart Simpson");
+    Person editor2 = new Person("Marge Simpson");
     Person sbElse = new Person("Peter Griffin");
 
     Document submitedDocument = document()
             .withStatus(SUBMITED)
             .authoredBy(author)
-            .withEditor(editor)
+            .withEditors(editor, editor2)
             .build();
     
     Document rejectedDocument = document()
@@ -100,10 +103,27 @@ public class DocumentTest {
     }
     
     @Test
-    public void editorMayAcceptSubmitedDocument() {
+    public void documentIsAcceptedWhenAllEditorsAcceptIt() {
         submitedDocument.accept(editor);
+        submitedDocument.accept(editor2);
         
         assertThat(submitedDocument).hasStatus(ACCEPTED);
+    }
+    
+    @Test
+    public void documentIsNotAcceptedUntilAllEditorsAcceptIt() {
+        submitedDocument.accept(editor);
+        
+        assertThat(submitedDocument).hasStatus(SUBMITED);
+    }
+    
+    @Test
+    public void editorCantAcceptDocumentMoreThanOnce() {
+        submitedDocument.accept(editor);
+        
+        exception.expect(IllegalStateException.class);
+        
+        submitedDocument.accept(editor);
     }
     
     @Test
@@ -119,4 +139,5 @@ public class DocumentTest {
         
         draftDocument.accept(editor);
     }
+    
 }
