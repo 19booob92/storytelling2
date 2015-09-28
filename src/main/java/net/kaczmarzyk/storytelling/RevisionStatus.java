@@ -1,9 +1,9 @@
 package net.kaczmarzyk.storytelling;
 
 
-public enum DocumentStatus {
+public enum RevisionStatus {
 
-    NEW,
+    DRAFT,
     SUBMITED,
     REJECTED,
     ACCEPTED
