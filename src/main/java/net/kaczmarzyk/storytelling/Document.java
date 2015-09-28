@@ -41,7 +41,17 @@ public class Document {
     }
     
     public void reject(Person rejectingEditor) {
+        if (!Objects.equals(editor, rejectingEditor)) {
+            throw new IllegalArgumentException("only editor may reject document");
+        }
         getLastRevision().reject();
+    }
+    
+    public void accept(Person acceptingEditor) {
+        if (!Objects.equals(editor, acceptingEditor)) {
+            throw new IllegalArgumentException("only editor may reject document");
+        }
+        getLastRevision().accept();
     }
 
     public List<Revision> getRevisions() {

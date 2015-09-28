@@ -16,7 +16,17 @@ public class Revision {
     }
     
     void reject() {
+        if (status != RevisionStatus.SUBMITED) {
+            throw new IllegalStateException("only submited document may be rejected");
+        }
         this.status = RevisionStatus.REJECTED;
+    }
+    
+    void accept() {
+        if (status != RevisionStatus.SUBMITED) {
+            throw new IllegalStateException("only submited document may be accepted");
+        }
+        this.status = RevisionStatus.ACCEPTED;
     }
     
     public String getContent() {

@@ -1,6 +1,7 @@
 package net.kaczmarzyk;
 
 import net.kaczmarzyk.storytelling.Document;
+import net.kaczmarzyk.storytelling.RevisionStatus;
 
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
@@ -21,6 +22,12 @@ public class DocumentAssert extends AbstractAssert<DocumentAssert, Document> {
     public DocumentAssert hasContent(String content) {
         isNotNull();
         Assertions.assertThat(actual.getLastRevision().getContent()).isEqualTo(content);
+        return this;
+    }
+    
+    public DocumentAssert hasStatus(RevisionStatus status) {
+        isNotNull();
+        Assertions.assertThat(actual.getLastRevision().getStatus()).isEqualTo(status);
         return this;
     }
     

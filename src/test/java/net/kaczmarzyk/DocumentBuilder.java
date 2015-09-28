@@ -1,5 +1,7 @@
 package net.kaczmarzyk;
 
+import java.util.Arrays;
+
 import net.kaczmarzyk.storytelling.Document;
 import net.kaczmarzyk.storytelling.RevisionStatus;
 import net.kaczmarzyk.storytelling.Person;
@@ -26,10 +28,20 @@ public class DocumentBuilder {
         return this;
     }
     
+    public DocumentBuilder withEditor(Person editor) {
+        this.editor = editor;
+        return this;
+    }
+    
     public Document build() {
         Document doc = new Document(content, author, editor, reviewer);
-        if (status == RevisionStatus.REJECTED) {
+        if (Arrays.asList(RevisionStatus.SUBMITED,
+                RevisionStatus.REJECTED,
+                RevisionStatus.ACCEPTED).contains(status)) {
+            
             doc.submit(author);
+        }
+        if (status == RevisionStatus.REJECTED) {
             doc.reject(editor);
         }
         return doc;
