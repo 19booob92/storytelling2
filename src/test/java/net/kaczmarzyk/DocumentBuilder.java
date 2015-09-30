@@ -40,18 +40,13 @@ public class DocumentBuilder {
     
     public Document build() {
         Document doc = new Document(content, author, editors, reviewer);
-        if (Arrays.asList(RevisionStatus.SUBMITED,
-                RevisionStatus.REJECTED,
-                RevisionStatus.ACCEPTED).contains(status)) {
-            
-            doc.submit(author);
-        }
-        if (status == RevisionStatus.REJECTED) {
-            doc.reject(editors.get(0));
-            if (!doc.isRejected()) {
-                throw new IllegalStateException("failed to build a rejected document");
-            }
-        }
+        submitIfRequired(doc);
+        rejectIfRequired(doc);
+        acceptIfRequired(doc);
+        return doc;
+    }
+
+    private void acceptIfRequired(Document doc) {
         if (status == RevisionStatus.ACCEPTED) {
             for (Person editor : editors) {
                 doc.accept(editor);
@@ -60,7 +55,24 @@ public class DocumentBuilder {
                 throw new IllegalStateException("failed to build an accepted document");
             }
         }
-        return doc;
+    }
+
+    private void rejectIfRequired(Document doc) {
+        if (status == RevisionStatus.REJECTED) {
+            doc.reject(editors.get(0));
+            if (!doc.isRejected()) {
+                throw new IllegalStateException("failed to build a rejected document");
+            }
+        }
+    }
+
+    private void submitIfRequired(Document doc) {
+        if (Arrays.asList(RevisionStatus.SUBMITED,
+                RevisionStatus.REJECTED,
+                RevisionStatus.ACCEPTED).contains(status)) {
+            
+            doc.submit(author);
+        }
     }
     
     public static DocumentBuilder document() {
