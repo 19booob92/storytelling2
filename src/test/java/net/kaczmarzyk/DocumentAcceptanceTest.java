@@ -21,44 +21,59 @@ public class DocumentAcceptanceTest {
     Person editor2 = new Person("Marge Simpson");
     Person sbElse = new Person("Peter Griffin");
     
-    Document submitedDocument = document()
-            .withStatus(SUBMITED)
-            .withEditors(editor, editor2)
-            .build();
-    
     Document draftDocument = document()
             .withEditor(editor)
             .build();
     
     @Test
     public void documentIsAcceptedWhenAllEditorsAcceptIt() {
-        submitedDocument.accept(editor);
-        submitedDocument.accept(editor2);
+        Document document = document()
+                .withStatus(SUBMITED)
+                .withEditors(editor, editor2)
+                .build();
         
-        assertThat(submitedDocument).hasStatus(ACCEPTED);
+        document.accept(editor);
+        document.accept(editor2);
+        
+        assertThat(document).hasStatus(ACCEPTED);
     }
     
     @Test
     public void documentIsNotAcceptedUntilAllEditorsAcceptIt() {
-        submitedDocument.accept(editor);
+        Document document = document()
+                .withStatus(SUBMITED)
+                .withEditors(editor, editor2)
+                .build();
         
-        assertThat(submitedDocument).hasStatus(SUBMITED);
+        document.accept(editor);
+        
+        assertThat(document).hasStatus(SUBMITED);
     }
     
     @Test
     public void editorCantAcceptDocumentMoreThanOnce() {
-        submitedDocument.accept(editor);
+        Document document = document()
+                .withStatus(SUBMITED)
+                .withEditors(editor)
+                .build();
+        
+        document.accept(editor);
         
         exception.expect(IllegalStateException.class);
         
-        submitedDocument.accept(editor);
+        document.accept(editor);
     }
     
     @Test
     public void onlyEditorMayAcceptDocument() {
+        Document document = document()
+                .withStatus(SUBMITED)
+                .withEditors(editor)
+                .build();
+        
         exception.expect(IllegalArgumentException.class);
         
-        submitedDocument.accept(sbElse);
+        document.accept(sbElse);
     }
 
     @Test
