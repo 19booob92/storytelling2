@@ -50,7 +50,7 @@ public class Document {
     
     public void accept(Person acceptingEditor) {
         if (!editors.contains(acceptingEditor)) {
-            throw new IllegalArgumentException("only editor may reject document");
+            throw new IllegalArgumentException("only editor may accept document");
         }
         Revision lastRevision = getLastRevision();
         lastRevision.accept(acceptingEditor);
@@ -63,5 +63,13 @@ public class Document {
 
     public Revision getLastRevision() {
         return revisions.get(revisions.size() - 1);
+    }
+
+    public boolean isRejected() {
+        return getLastRevision().getStatus() == RevisionStatus.REJECTED;
+    }
+
+    public boolean isAccepted() {
+        return getLastRevision().getStatus() == RevisionStatus.ACCEPTED;
     }
 }
